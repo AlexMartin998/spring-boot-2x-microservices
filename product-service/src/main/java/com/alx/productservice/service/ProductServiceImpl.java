@@ -1,11 +1,14 @@
 package com.alx.productservice.service;
 
 import com.alx.productservice.dto.ProductRequestDto;
+import com.alx.productservice.dto.ProductResponseDto;
 import com.alx.productservice.model.Product;
 import com.alx.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -26,6 +29,20 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
         log.info("Product '{}' is saved", product.getId());
+    }
+
+    @Override
+    public List<ProductResponseDto> findAll() {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(product -> ProductResponseDto.builder()
+                        .id(product.getId())
+                        .name(product.getName())
+                        .description(product.getDescription())
+                        .price(product.getPrice())
+                        .build())
+                .toList();
     }
 
 }
