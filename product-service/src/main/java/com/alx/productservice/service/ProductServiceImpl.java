@@ -36,13 +36,18 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findAll();
 
         return products.stream()
-                .map(product -> ProductResponseDto.builder()
-                        .id(product.getId())
-                        .name(product.getName())
-                        .description(product.getDescription())
-                        .price(product.getPrice())
-                        .build())
+                .map(this::mapToProductResponseDto)
                 .toList();
+    }
+
+
+    private ProductResponseDto mapToProductResponseDto(Product product) {
+        return ProductResponseDto.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .build();
     }
 
 }
