@@ -7,6 +7,7 @@ import com.alx.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
+    @Transactional
     public void create(ProductRequestDto productRequestDto) {
         Product product = Product.builder()
                 .name(productRequestDto.getName())
@@ -32,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> findAll() {
         List<Product> products = productRepository.findAll();
 
