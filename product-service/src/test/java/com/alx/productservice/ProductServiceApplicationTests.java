@@ -1,8 +1,9 @@
 package com.alx.productservice;
 
-import com.alx.productservice.dto.ProductResponseDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.alx.productservice.dto.ProductRequestDto;
+import com.alx.productservice.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,6 +37,9 @@ class ProductServiceApplicationTests {
     @Autowired
     private ObjectMapper objectMapper;  // map POJO Object to JSON and JSON to POJO Object
 
+    @Autowired
+    private ProductRepository productRepository;
+
 
     // // Load properties dynamically
     @DynamicPropertySource
@@ -47,20 +51,24 @@ class ProductServiceApplicationTests {
     // // Test that call an Endpoint: moc mvc to call controller endpoints
     @Test
     void shouldCreateProduct() throws Exception {
-        ProductResponseDto productRequest = getProductRequest();
+        ProductRequestDto productRequest = getProductRequest();
         String productRequestString = objectMapper.writeValueAsString(productRequest);  // may throw exception
 
+        // create product
         mockMvc.perform( // may throw exception
-                MockMvcRequestBuilders.post("/api/product")
+                MockMvcRequestBuilders.post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequestString)
         ).andExpect(status().isCreated());
 
+
+        // check if it actually has been created
+        Assertions.assertEquals(1, productRepository.findAll().size());
     }
 
 
-    private ProductResponseDto getProductRequest() {
-        return ProductResponseDto.builder()
+    private ProductRequestDto getProductRequest() {
+        return ProductRequestDto.builder()
                 .name("Readme Note 15 Pro")
                 .description("Some Awesome Description")
                 .price(BigDecimal.valueOf(450))
