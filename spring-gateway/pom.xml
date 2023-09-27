@@ -25,12 +25,6 @@
         </dependency>
 
 
-        <!-- Resilience: Para poder Aplicar Patrones de Resiliencia | PILAS con esta dep -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
-        </dependency>
-
         <!-- Spring Gateway: Dep de Spring Cloud para config 1 API Gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
