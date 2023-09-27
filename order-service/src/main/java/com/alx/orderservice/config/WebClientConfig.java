@@ -1,5 +1,6 @@
 package com.alx.orderservice.config;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,8 +10,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     @Bean
-    public WebClient webClient() {
-        return WebClient.builder().build();
+    @LoadBalanced  // Client Load Balancing: Xq tendremos varias instancias del MS al q vamos a Sync Communication
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
     }
 
 }

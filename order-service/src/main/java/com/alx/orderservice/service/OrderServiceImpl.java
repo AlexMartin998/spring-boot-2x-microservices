@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
 
     @Override
@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderLineItems::getSkuCode)
                 .toList();
 
-        InventoryResponseDto[] inventoryResponseDtoArray = webClient.get()
+        InventoryResponseDto[] inventoryResponseDtoArray = webClientBuilder.build().get()
                 .uri(
                         inventoryMSBaseUrl.concat("/inventory"),
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build()
