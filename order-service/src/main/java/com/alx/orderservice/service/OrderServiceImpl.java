@@ -3,6 +3,7 @@ package com.alx.orderservice.service;
 import com.alx.orderservice.dto.InventoryResponseDto;
 import com.alx.orderservice.dto.OrderLineItemsDto;
 import com.alx.orderservice.dto.OrderRequestDto;
+import com.alx.orderservice.event.OrderPlacedEvent;
 import com.alx.orderservice.model.Order;
 import com.alx.orderservice.model.OrderLineItems;
 import com.alx.orderservice.repository.OrderLineItemRepository;
@@ -10,6 +11,7 @@ import com.alx.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
 
     @Override
@@ -68,6 +71,8 @@ public class OrderServiceImpl implements OrderService {
         if (!allProductsInStock || inventoryResponseDtoArray.length != skuCodes.size())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product is not in stock, please try again later");
 
+        // kafka
+        kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
 
         orderRepository.save(order);
 
